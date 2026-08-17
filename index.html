@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulpify — turn any text into a pulp paperback</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo-box" aria-hidden="true">
+      <span class="logo-ray">Ray</span>
+      <span class="logo-globe">&#127760;</span>
+      <span class="logo-gram">Gram</span>
+    </div>
+    <h1 class="wordmark">Pulpify</h1>
+  </div>
+
+  <nav class="steps" aria-label="Progress">
+    <button class="step-icon" id="stepUpload" data-target="upload" title="1. Upload your text" aria-label="Step 1: Upload">
+      <svg viewBox="0 0 24 24" class="icon-doc"><path d="M6 2h9l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 2v5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><line x1="8.5" y1="12" x2="15.5" y2="12" stroke="currentColor" stroke-width="1.4"/><line x1="8.5" y1="15" x2="15.5" y2="15" stroke="currentColor" stroke-width="1.4"/><line x1="8.5" y1="18" x2="12.5" y2="18" stroke="currentColor" stroke-width="1.4"/></svg>
+    </button>
+    <button class="step-icon" id="stepStyle" data-target="upload" title="2. Choose a cover style" aria-label="Step 2: Cover style">
+      <svg viewBox="0 0 24 24" class="icon-book"><path d="M5 4c3-1.4 6-1.4 7 0v16c-1-1.4-4-1.4-7 0z" fill="currentColor" opacity=".85"/><path d="M19 4c-3-1.4-6-1.4-7 0v16c1-1.4 4-1.4 7 0z" fill="currentColor" opacity=".55"/></svg>
+    </button>
+    <button class="step-icon go-slot" id="stepGo" data-target="output" title="Get your book" aria-label="Step 3: Get your book">
+      <span class="go-label">Go!</span>
+      <svg viewBox="0 0 24 24" class="icon-printer"><path d="M6 9V3h12v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><rect x="4" y="9" width="16" height="8" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="7" y="14" width="10" height="7" fill="currentColor"/></svg>
+    </button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ============ SCREEN 1: UPLOAD + COVER STYLE ============ -->
+  <section class="screen" id="screen-upload">
+
+    <div class="upload-row">
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Drop your text file here, or click to browse">
+        <div class="dz-empty" id="dzEmpty">
+          <p class="dz-hint">Drop your text file here.</p>
+          <p class="dz-subhint">or <span class="fake-link">click to browse</span> &nbsp;·&nbsp; .txt files</p>
+        </div>
+
+        <div class="dz-filled" id="dzFilled" hidden>
+          <div class="dz-line dz-title-line">
+            <span class="pencil">&#9998;</span>
+            <span class="dz-title" id="fileTitle">&ldquo;Untitled&rdquo;</span>
+            <span class="dz-filename" id="fileName">file.txt</span>
+          </div>
+          <div class="dz-line dz-author-line">
+            <span class="pencil">&#9998;</span>
+            <span class="dz-author" id="fileAuthor">Unknown</span>
+            <a href="#" class="replace-link" id="replaceLink">[ replace ]</a>
+          </div>
+        </div>
+        <input type="file" id="fileInput" accept=".txt,text/plain" hidden>
+      </div>
+
+      <div class="paper-size">
+        <div class="brace" aria-hidden="true">{</div>
+        <div class="paper-size-body">
+          <p class="paper-size-title">Paper Size<span class="asterisk">*</span></p>
+          <div class="toggle-row">
+            <span class="toggle-label" id="labelLetter">Letter</span>
+            <button class="toggle" id="paperToggle" role="switch" aria-checked="false" aria-label="Toggle paper size between Letter and A4">
+              <span class="toggle-knob"></span>
+            </button>
+            <span class="toggle-label" id="labelA4">A4</span>
+          </div>
+          <p class="paper-size-note"><span class="asterisk">*</span>What paper will you print on?</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cover-style-block">
+      <p class="cover-style-label" id="coverStyleLabel">Cover Style (choose one):</p>
+
+      <div class="cover-grid" id="coverGrid">
+        <!-- cover tiles injected by script.js -->
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ SCREEN 2: GET YOUR BOOK ============ -->
+  <section class="screen" id="screen-output" hidden>
+
+    <div class="output-grid">
+
+      <div class="output-left">
+        <h2 class="output-heading">Get your book.</h2>
+
+        <ul class="output-options">
+          <li>
+            <span class="opt-icon">&#128196;<span class="pdf-badge">PDF</span></span>
+            <a href="#" class="opt-link" id="downloadPdfLink">Download</a> book ready to bind.
+          </li>
+          <li>
+            <span class="opt-icon">&#128214;</span>
+            <a href="#" class="opt-link" id="bindingInstructionsLink">View</a> do-it-yourself binding instructions.
+          </li>
+          <li>
+            <span class="opt-icon">&#128213;</span>
+            Have Pulpify bind one for you:
+          </li>
+        </ul>
+
+        <form class="order-form" id="orderForm">
+          <div class="order-line">
+            <span>Send</span>
+            <input type="number" id="qtyInput" class="qty-input" min="1" max="99" value="1">
+            <span>copy to</span>
+            <span class="order-total">
+              total: <strong id="totalPrice">$19.99</strong>
+              <div class="shipping-note">FREE U.S. SHIPPING</div>
+            </span>
+          </div>
+
+          <div class="order-fields">
+            <input type="text" placeholder="Name" name="name" class="field-full">
+            <input type="text" placeholder="Address" name="address" class="field-full">
+            <input type="text" placeholder="Address 2" name="address2" class="field-full">
+            <div class="field-row">
+              <input type="text" placeholder="City" name="city" class="field-city">
+              <input type="text" placeholder="State" name="state" class="field-state">
+              <input type="text" placeholder="Zip" name="zip" class="field-zip">
+            </div>
+          </div>
+
+          <button type="submit" class="go-button" id="orderGoBtn">Go!</button>
+        </form>
+      </div>
+
+      <div class="output-center">
+        <div class="book-render" id="bookRender">
+          <div class="book-spine" id="bookSpine"></div>
+          <div class="book-cover" id="bookCover"></div>
+        </div>
+      </div>
+
+      <div class="output-right" id="upsellSidebar">
+        <p class="upsell-copy">Want a custom cover?<br>Choose a Pulpify style for <strong>$4.99</strong></p>
+        <div class="upsell-grid" id="upsellGrid">
+          <!-- injected by script.js -->
+        </div>
+        <a href="#" class="revert-link" id="revertClassicLink" hidden>&larr; use plain Pulpify Classic (included)</a>
+      </div>
+
+    </div>
+
+    <button class="back-link" id="backToUpload">&larr; back to upload</button>
+  </section>
+
+</main>
+
+<div class="modal-overlay" id="modalOverlay" hidden>
+  <div class="modal">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
